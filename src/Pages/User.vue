@@ -101,7 +101,7 @@
             <div v-if="showModal" class="fixed inset-0 z-[100] flex items-center justify-center p-4">
                 <div class="absolute inset-0 bg-slate-900/30 backdrop-blur-[2px]" @click="closeModal"></div>
                 
-                <div class="relative bg-white rounded shadow-2xl w-full max-w-4xl overflow-hidden animate-modal border border-slate-300">
+                <div class="relative flex max-h-[94vh] w-full max-w-6xl flex-col rounded border border-slate-300 bg-white shadow-2xl animate-modal">
                     <!-- Modal Header -->
                     <div class="bg-slate-50 border-b border-slate-200 p-5 flex items-center justify-between">
                         <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2 uppercase tracking-tight">
@@ -113,8 +113,8 @@
                         </button>
                     </div>
 
-                    <form @submit.prevent="submitForm" class="p-6 space-y-5" autocomplete="off">
-                        <div class="flex flex-col md:flex-row gap-6">
+                    <form @submit.prevent="submitForm" class="min-h-0 flex-1 space-y-5 overflow-y-auto p-6 lg:p-7 custom-modal-scroll" autocomplete="off">
+                        <div class="flex flex-col gap-6 lg:flex-row">
                             <!-- Image Section -->
                             <div class="flex flex-col items-center gap-3 shrink-0">
                                 <div class="relative">
@@ -131,7 +131,7 @@
                             </div>
 
                             <!-- Main Fields -->
-                            <div class="flex-1 grid grid-cols-2 gap-4">
+                            <div class="grid flex-1 grid-cols-1 gap-4 md:grid-cols-2 xl:gap-x-6">
                                 <div class="space-y-1">
                                     <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Ism</label>
                                     <input v-model="editing.firstname" type="text" autocomplete="off" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:border-[#2563EB] focus:bg-white outline-none font-bold text-slate-700 transition-all" required />
@@ -186,7 +186,7 @@
                                                 :close-on-select="true"
                                                 :show-labels="false"
                                                 placeholder="Fakultetni tanlang"
-                                                open-direction="bottom"
+                                                open-direction="top"
                                             />
                                         </div>
                                     </div>
@@ -202,7 +202,7 @@
                                                 :close-on-select="true"
                                                 :show-labels="false"
                                                 placeholder="Guruhni tanlang"
-                                                open-direction="bottom"
+                                                open-direction="top"
                                             />
                                         </div>
                                     </div>
@@ -468,8 +468,29 @@ onMounted(() => {
     border: 1px solid #e2e8f0;
     margin-top: 4px;
     box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+    max-height: 220px !important;
+    z-index: 120;
+}
+.custom-multiselect :deep(.multiselect--above .multiselect__content-wrapper) {
+    margin-top: 0;
+    margin-bottom: 4px;
+}
+.custom-multiselect :deep(.multiselect__option) {
+    min-height: 38px;
+    padding: 9px 14px;
+    font-size: 13px;
 }
 .custom-multiselect :deep(.multiselect__option--highlight) {
     background: #2563EB;
+}
+.custom-modal-scroll::-webkit-scrollbar {
+    width: 6px;
+}
+.custom-modal-scroll::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 999px;
+}
+.custom-modal-scroll::-webkit-scrollbar-track {
+    background: transparent;
 }
 </style>

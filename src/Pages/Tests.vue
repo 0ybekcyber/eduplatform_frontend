@@ -69,7 +69,11 @@
                         </div>
                         <div class="flex items-center gap-1.5 text-[11px] text-slate-500 bg-slate-50 p-1.5 rounded border border-slate-100/50">
                             <span class="material-icons text-[14px] opacity-40">list_alt</span>
-                            <span>{{ test.questions?.length }} ta savol</span>
+                            <span>{{ getVisibleQuestionCount(test) }} ta savol</span>
+                        </div>
+                        <div v-if="test.isBankRandomized" class="col-span-2 flex items-center gap-1.5 text-[11px] text-emerald-700 bg-emerald-50 p-1.5 rounded border border-emerald-100">
+                            <span class="material-icons text-[14px] opacity-60">shuffle</span>
+                            <span>{{ test.bankSubject }} bazasidan har talabaga aralash random</span>
                         </div>
                         <div class="col-span-2 flex items-center gap-1.5 text-[11px] text-blue-600 bg-blue-50 p-1.5 rounded border border-blue-100">
                             <span class="material-icons text-[14px] opacity-60">workspace_premium</span>
@@ -250,7 +254,7 @@
                                     <div class="flex items-start justify-between gap-3">
                                         <div>
                                             <p class="text-[10px] font-bold text-blue-600 uppercase tracking-tight">Fan bazasidan test tuzish</p>
-                                            <p class="text-[11px] text-slate-500 mt-1">Fan bazasini tanlang, savollar sonini kiriting va random savollarni oling.</p>
+                                            <p class="text-[11px] text-slate-500 mt-1">Fan va savollar sonini belgilang. Har bir talabaga shu bazadan alohida random savollar tushadi.</p>
                                         </div>
                                         <button @click="$router.push('/test-bank')" type="button" class="text-[10px] font-bold text-blue-500 hover:underline">Bazani boshqarish</button>
                                     </div>
@@ -263,8 +267,11 @@
                                         </select>
                                         <input v-model.number="bankQuestionCount" type="number" min="1" :max="selectedBankSubjectCount || 1000" class="px-3 py-2 bg-slate-50 border border-slate-200 rounded text-xs outline-none focus:bg-white focus:border-blue-500" placeholder="Soni" />
                                         <button @click="fillQuestionsFromBank" :disabled="bankLoading" type="button" class="px-4 py-2 bg-slate-900 text-white rounded text-[11px] font-bold hover:bg-slate-800 transition-colors disabled:opacity-60">
-                                            {{ bankLoading ? 'Olinmoqda...' : 'Random olish' }}
+                                            {{ bankLoading ? 'Sozlanmoqda...' : 'Random rejimni yoqish' }}
                                         </button>
+                                    </div>
+                                    <div v-if="editing.isBankRandomized" class="rounded border border-emerald-100 bg-emerald-50 px-3 py-2 text-[11px] font-bold text-emerald-700">
+                                        {{ editing.bankSubject }} bazasidan har bir talabaga {{ editing.bankQuestionCount }} ta aralash random savol beriladi. Savollar imkon qadar takrorlanmaydi, baza yetmasa oz qismi qayta ishlatiladi.
                                     </div>
                                 </div>
 
@@ -330,7 +337,7 @@
                                 <p class="text-slate-400 font-bold relative z-10 uppercase tracking-widest text-xs">Test natijalari hisoboti</p>
                             </div>
 
-                            <div v-for="(q, idx) in detailView.TestModel?.questions" :key="q.id" 
+                            <div v-for="(q, idx) in detailQuestions" :key="q.id || idx" 
                                 class="bg-white border border-slate-200/60 rounded-[2rem] p-8 lg:p-10 space-y-6 shadow-sm hover:border-blue-100 transition-colors group">
                                 <h4 class="text-xl font-black text-slate-800 leading-snug flex gap-4">
                                     <span class="text-blue-200 group-hover:text-blue-500 transition-colors">{{ (idx + 1).toString().padStart(2, '0') }}</span>
@@ -362,7 +369,7 @@
                                     <div class="p-5 px-10 flex justify-between gap-4"><span class="text-slate-400 font-black text-[10px] uppercase tracking-widest">Fakultet</span><span class="text-right">{{ detailView.student?.FacultyModel?.name || 'Kiritilmagan' }}</span></div>
                                     <div class="p-5 px-10 bg-slate-50/30 flex justify-between gap-4"><span class="text-slate-400 font-black text-[10px] uppercase tracking-widest">Guruh</span><span class="text-right">{{ detailView.student?.GroupModel?.name || 'Kiritilmagan' }}</span></div>
                                     <div class="p-5 px-10 flex justify-between gap-4"><span class="text-slate-400 font-black text-[10px] uppercase tracking-widest">Vaqt</span><span>{{ formatDate(detailView.startTime) }}</span></div>
-                                    <div class="p-5 px-10 bg-slate-50/30 flex justify-between gap-4"><span class="text-slate-400 font-black text-[10px] uppercase tracking-widest">To'g'ri</span><span class="text-emerald-600">{{ detailView.score }} / {{ detailView.TestModel?.questions?.length }}</span></div>
+                                    <div class="p-5 px-10 bg-slate-50/30 flex justify-between gap-4"><span class="text-slate-400 font-black text-[10px] uppercase tracking-widest">To'g'ri</span><span class="text-emerald-600">{{ detailView.score }} / {{ detailView.totalQuestions || detailQuestions.length }}</span></div>
                                     <div class="p-5 px-10 flex justify-between gap-4"><span class="text-slate-400 font-black text-[10px] uppercase tracking-widest">Ball</span><span class="text-blue-600">{{ formatScore(detailView.earnedScore ?? ((detailView.percentage || 0) * (detailView.TestModel?.maxScore || 100) / 100)) }} / {{ formatScore(detailView.TestModel?.maxScore || 100) }}</span></div>
                                     <div class="p-8 px-10 flex justify-between items-center bg-blue-600 text-white">
                                         <span class="font-black text-[10px] uppercase tracking-widest">Umumiy Ball</span>
@@ -594,37 +601,37 @@
         <Teleport to="body">
             <transition name="modal">
                 <div v-if="showResult" class="fixed inset-0 z-[9999] flex items-center justify-center p-4">
-                <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-md"></div>
-                <div class="relative bg-white p-12 lg:p-16 rounded-[4rem] shadow-2xl w-full max-w-xl text-center animate-modal overflow-hidden">
+                <div class="absolute inset-0 bg-slate-900/55 backdrop-blur-sm"></div>
+                <div class="relative w-full max-w-4xl overflow-hidden rounded-[1.75rem] bg-white p-7 text-center shadow-2xl animate-modal sm:p-8 lg:p-10">
                     <!-- Background decoration -->
                     <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-500 via-purple-500 to-emerald-500"></div>
-                    <div class="absolute -top-24 -left-24 w-48 h-48 bg-blue-50 rounded-full opacity-50"></div>
-                    <div class="absolute -bottom-24 -right-24 w-48 h-48 bg-emerald-50 rounded-full opacity-50"></div>
+                    <div class="absolute -top-24 -left-24 w-44 h-44 bg-blue-50 rounded-full opacity-50"></div>
+                    <div class="absolute -bottom-24 -right-24 w-44 h-44 bg-emerald-50 rounded-full opacity-50"></div>
 
                     <div class="relative z-10">
-                        <div class="w-32 h-32 bg-emerald-50 text-emerald-500 rounded-[2.5rem] flex items-center justify-center mx-auto mb-10 border-4 border-emerald-100 shadow-lg shadow-emerald-200/20">
-                            <span class="material-icons text-6xl">emoji_events</span>
+                        <div class="mx-auto mb-5 flex h-20 w-20 items-center justify-center rounded-3xl border-2 border-emerald-100 bg-emerald-50 text-emerald-500 shadow-lg shadow-emerald-200/20">
+                            <span class="material-icons text-4xl">emoji_events</span>
                         </div>
-                        <h3 class="text-4xl font-black text-slate-800 tracking-tight mb-2">Tabriklaymiz!</h3>
-                        <p class="text-slate-400 font-bold uppercase tracking-[0.2em] text-xs mb-10">Siz testni muvaffaqiyatli yakunladingiz</p>
+                        <h3 class="mb-1 text-3xl font-black tracking-tight text-slate-800">Tabriklaymiz!</h3>
+                        <p class="mb-7 text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">Siz testni muvaffaqiyatli yakunladingiz</p>
                         
-                        <div class="grid grid-cols-2 gap-6 mb-12">
-                            <div class="p-8 bg-slate-50 rounded-[2rem] border border-slate-100">
+                        <div class="mb-8 grid grid-cols-1 gap-4 md:grid-cols-3">
+                            <div class="rounded-2xl border border-slate-100 bg-slate-50 p-6">
                                 <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">To'g'ri javoblar</p>
                                 <p class="text-3xl font-black text-slate-800">{{ score }} <span class="text-slate-300 text-lg">/ {{ solving?.questions?.length }}</span></p>
                             </div>
-                            <div class="p-8 bg-blue-50/50 rounded-[2rem] border border-blue-100">
+                            <div class="rounded-2xl border border-blue-100 bg-blue-50/50 p-6">
                                 <p class="text-[10px] font-black text-blue-400 uppercase tracking-widest mb-2">Umumiy foiz</p>
                                 <p class="text-3xl font-black text-blue-600">{{ solving?.questions?.length ? Math.round((score / solving.questions.length) * 100) : 0 }}%</p>
                             </div>
-                            <div class="col-span-2 p-8 bg-emerald-50/50 rounded-[2rem] border border-emerald-100">
+                            <div class="rounded-2xl border border-emerald-100 bg-emerald-50/50 p-6">
                                 <p class="text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-2">Hisoblangan ball</p>
                                 <p class="text-3xl font-black text-emerald-600">{{ formatScore(solving?.questions?.length ? ((score / solving.questions.length) * (solving?.maxScore || 100)) : 0) }} <span class="text-emerald-300 text-lg">/ {{ formatScore(solving?.maxScore || 100) }}</span></p>
                             </div>
                         </div>
                         
                         <button @click="showResult = false; solving = null; loadData()" 
-                            class="w-full py-6 bg-slate-900 text-white rounded-3xl font-black text-xs uppercase tracking-widest shadow-2xl shadow-slate-900/20 hover:bg-slate-800 transition-all transform active:scale-[0.98]">
+                            class="mx-auto block w-full max-w-xl rounded-2xl bg-slate-900 py-4 text-xs font-black uppercase tracking-widest text-white shadow-2xl shadow-slate-900/20 transition-all hover:bg-slate-800 active:scale-[0.98]">
                             Natijalarni saqlash va yopish
                         </button>
                     </div>
@@ -684,12 +691,30 @@ const editing = ref({
     groupIds: [],
     studentIds: [],
     deadline: '',
+    isBankRandomized: false,
+    bankSubject: null,
+    bankQuestionCount: null,
     questions: []
 })
 
 const deletingTest = ref(null)
 
 const currentQuestion = computed(() => solving.value?.questions?.[activeQuestionIndex.value] || {})
+const detailQuestions = computed(() => {
+    const savedAnswers = Array.isArray(detailView.value?.answers) ? detailView.value.answers : []
+    const answersWithQuestions = savedAnswers
+        .filter(answer => answer.questionText)
+        .map(answer => ({
+            id: answer.questionId,
+            text: answer.questionText,
+            options: answer.options || [],
+            correctAnswer: answer.correctAnswer
+        }))
+
+    return answersWithQuestions.length
+        ? answersWithQuestions
+        : (detailView.value?.TestModel?.questions || [])
+})
 const questionBankSubjects = computed(() => questionBankStats.value.subjects || [])
 const selectedBankSubjectCount = computed(() => {
     return questionBankSubjects.value.find(item => item.subject === selectedBankSubject.value)?.count || 0
@@ -697,6 +722,12 @@ const selectedBankSubjectCount = computed(() => {
 
 const displayQuestionText = (text) => {
     return (text || '').toString().replace(/^\s*\d+[\).\-\s]+/, '').trim()
+}
+
+const getVisibleQuestionCount = (test) => {
+    return test?.isBankRandomized
+        ? Number(test.bankQuestionCount || 0)
+        : (test?.questions?.length || 0)
 }
 
 const loadData = async () => {
@@ -835,6 +866,24 @@ const selectAllStudents = () => {
 const hasSolved = (testId) => myResults.value.some(r => r.testId === testId)
 const getSolvedData = (testId) => myResults.value.find(r => r.testId === testId)
 
+const shuffleItems = (items = []) => {
+    const shuffled = [...items]
+    for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1))
+        ;[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
+    }
+    return shuffled
+}
+
+const prepareTestForStudent = (test) => {
+    const randomized = JSON.parse(JSON.stringify(test))
+    randomized.questions = shuffleItems(randomized.questions || []).map(question => ({
+        ...question,
+        options: shuffleItems(question.options || [])
+    }))
+    return randomized
+}
+
 const viewDetail = async (resultId) => {
     try {
         const res = await api.get(`/results/${resultId}`)
@@ -852,11 +901,16 @@ const openResultsModal = async (test) => {
     } finally { resultsLoading.value = false }
 }
 
-const startSolving = (test) => {
-    if (!test.questions?.length) return alert('Savollar topilmadi!')
-    solving.value = JSON.parse(JSON.stringify(test))
+const startSolving = async (test) => {
+    if (!getVisibleQuestionCount(test)) return alert('Savollar topilmadi!')
+    try {
+        const res = await api.get(`/tests/${test.id}/attempt`)
+        solving.value = prepareTestForStudent(res.data)
+    } catch (err) {
+        return alert(err.response?.data?.message || 'Test savollarini yuklashda xatolik yuz berdi.')
+    }
     activeQuestionIndex.value = 0
-    answers.value = new Array(test.questions.length).fill(null)
+    answers.value = new Array(solving.value.questions.length).fill(null)
     timeLeft.value = (test.duration || 60) * 60
     startTime.value = new Date().toISOString()
     
@@ -880,6 +934,10 @@ const finishSolving = async () => {
         
         return {
             questionId: q.id,
+            bankQuestionId: q.bankQuestionId || null,
+            questionText: q.text,
+            options: q.options,
+            correctAnswer: q.correctAnswer,
             answer: answers.value[idx],
             isCorrect
         }
@@ -900,7 +958,7 @@ const finishSolving = async () => {
 }
 
 const getAnswerStyle = (q, opt) => {
-    const studentAns = detailView.value.answers.find(a => a.questionId === q.id)
+    const studentAns = detailView.value.answers.find(a => a.questionId?.toString() === q.id?.toString())
     if (!studentAns) return 'bg-white border-slate-100 text-slate-500'
 
     const optStr = (opt || '').toString().trim().toLowerCase()
@@ -914,7 +972,7 @@ const getAnswerStyle = (q, opt) => {
 }
 
 const getAnswerIcon = (q, opt) => {
-    const studentAns = detailView.value.answers.find(a => a.questionId === q.id)
+    const studentAns = detailView.value.answers.find(a => a.questionId?.toString() === q.id?.toString())
     if (!studentAns) return 'radio_button_unchecked'
 
     const optStr = (opt || '').toString().trim().toLowerCase()
@@ -937,8 +995,12 @@ const openCreateModal = () => {
         groupIds: [], 
         studentIds: [],
         deadline: '', 
+        isBankRandomized: false,
+        bankSubject: null,
+        bankQuestionCount: null,
         questions: [] 
     }
+    selectedBankSubject.value = ''
     bankQuestionCount.value = null
     openModal()
 }
@@ -969,9 +1031,13 @@ const openEditModal = (test) => {
         }) : [],
         facultyIds: facultyIds,
         groupIds: groupIds,
-        studentIds: studentIds
+        studentIds: studentIds,
+        isBankRandomized: !!test.isBankRandomized,
+        bankSubject: test.bankSubject || null,
+        bankQuestionCount: test.bankQuestionCount || null
     }
-    bankQuestionCount.value = null
+    selectedBankSubject.value = test.bankSubject || ''
+    bankQuestionCount.value = test.bankQuestionCount || null
     openModal()
 }
 
@@ -1072,6 +1138,9 @@ const fillQuestionsFromBank = async () => {
         const res = await api.get('/tests/question-bank/random', { params: { count, subject: selectedBankSubject.value } })
         const randomQuestions = res.data?.questions || []
         editing.value.questions = randomQuestions
+        editing.value.isBankRandomized = true
+        editing.value.bankSubject = selectedBankSubject.value
+        editing.value.bankQuestionCount = count
         await loadQuestionBankStats()
     } catch (err) {
         alert(err.response?.data?.message || 'Bazadan savollarni olishda xatolik yuz berdi.')
@@ -1095,7 +1164,18 @@ const downloadSampleExcel = () => {
 const submitForm = async () => {
     if (!editing.value.name) return alert('Test nomini kiriting!')
     if (!Number(editing.value.maxScore) || Number(editing.value.maxScore) <= 0) return alert('Test bali 0 dan katta bo\'lishi kerak!')
-    if (editing.value.questions.length === 0) return alert('Kamida bitta savol qo\'shing!')
+    if (selectedBankSubject.value && Number(bankQuestionCount.value)) {
+        editing.value.isBankRandomized = true
+        editing.value.bankSubject = selectedBankSubject.value
+        editing.value.bankQuestionCount = Number(bankQuestionCount.value)
+    }
+    if (editing.value.isBankRandomized) {
+        if (!editing.value.bankSubject || !Number(editing.value.bankQuestionCount)) {
+            return alert('Fan bazasi va har bir talabaga beriladigan savollar sonini belgilang!')
+        }
+    } else if (editing.value.questions.length === 0) {
+        return alert('Kamida bitta savol qo\'shing!')
+    }
     
     // String bo'lib kelsa filterlash va numberga o'tkazish
     editing.value.facultyIds = (editing.value.facultyIds || []).map(Number).filter(n => !isNaN(n))
@@ -1124,7 +1204,7 @@ const sanitizeFileName = (value) => {
 }
 
 const getStudentAnswer = (question) => {
-    return detailView.value?.answers?.find(a => Number(a.questionId) === Number(question.id))
+    return detailView.value?.answers?.find(a => a.questionId?.toString() === question.id?.toString())
 }
 
 const downloadPdf = async () => {
@@ -1196,14 +1276,14 @@ const downloadPdf = async () => {
         drawInfoRow('Fakultet', result.student?.FacultyModel?.name || 'Kiritilmagan')
         drawInfoRow('Guruh', result.student?.GroupModel?.name || 'Kiritilmagan')
         drawInfoRow('Vaqt', formatDate(result.startTime))
-        drawInfoRow('To\'g\'ri javob', `${result.score} / ${test.questions?.length || result.totalQuestions || 0}`)
+        drawInfoRow('To\'g\'ri javob', `${result.score} / ${result.totalQuestions || detailQuestions.value.length || 0}`)
         drawInfoRow('Ball', `${formatScore(earnedScore)} / ${formatScore(test.maxScore || 100)}`)
         drawInfoRow('Foiz', `${Math.round(result.percentage || 0)}%`)
 
         y += 5
         writeText('Savollar va javoblar', margin, { size: 13, style: 'bold', lineGap: 8 })
 
-        ;(test.questions || []).forEach((question, index) => {
+        ;(detailQuestions.value || []).forEach((question, index) => {
             const answer = getStudentAnswer(question)
             const statusText = answer?.isCorrect ? 'To\'g\'ri' : 'Noto\'g\'ri'
 

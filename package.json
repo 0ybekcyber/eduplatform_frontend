@@ -1,0 +1,33 @@
+{
+  "name": "EduPlatform",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@heroicons/vue": "^2.2.0",
+    "axios": "^1.8.4",
+    "dotenv": "^16.5.0",
+    "jspdf": "^4.2.1",
+    "material-design-icons-iconfont": "^6.7.0",
+    "pinia": "^3.0.2",
+    "vue": "^3.5.13",
+    "vue-multiselect": "^3.0.0-beta.3",
+    "vue-router": "^4.5.0",
+    "vue-select": "^3.20.4",
+    "vue3-touch-events": "^5.0.13",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.2.1",
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.3",
+    "tailwindcss": "^3.0.0",
+    "vite": "^6.2.0",
+    "vite-plugin-pwa": "^1.0.0"
+  }
+}

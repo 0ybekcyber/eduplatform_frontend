@@ -3,6 +3,10 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "engines": {
+    "node": ">=18.20.0",
+    "npm": ">=9"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -18,7 +22,6 @@
     "vue": "^3.5.13",
     "vue-multiselect": "^3.0.0-beta.3",
     "vue-router": "^4.5.0",
-    "vue-select": "^3.20.4",
     "vue3-touch-events": "^5.0.13",
     "xlsx": "^0.18.5"
   },

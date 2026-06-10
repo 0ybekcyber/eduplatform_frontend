@@ -136,52 +136,6 @@
               </button>
             </div>
           </div>
-
-          <div class="space-y-3">
-            <div v-for="item in settingItems" :key="item.key" class="flex items-start justify-between gap-4 rounded-2xl border border-slate-200 p-4">
-              <div class="pr-4">
-                <p class="text-sm font-black text-slate-800">{{ item.title }}</p>
-                <p class="mt-1 text-xs leading-5 text-slate-500">{{ item.description }}</p>
-              </div>
-              <button @click="portalSettings[item.key] = !portalSettings[item.key]" class="relative mt-1 h-7 w-14 rounded-full transition-all" :class="portalSettings[item.key] ? 'bg-emerald-500' : 'bg-slate-200'">
-                <span class="absolute top-1 h-5 w-5 rounded-full bg-white shadow transition-all" :class="portalSettings[item.key] ? 'left-8' : 'left-1'"></span>
-              </button>
-            </div>
-          </div>
-
-          <div class="mt-5 rounded-[24px] border border-orange-200 bg-orange-50 p-4">
-            <div class="flex items-center justify-between gap-4">
-              <div>
-                <p class="text-sm font-black text-slate-800">Portal sozlamalarini saqlash</p>
-                <p class="mt-1 text-xs text-slate-600">Bu bo‘lim localStorage orqali aynan shu brauzerda eslab qolinadi.</p>
-              </div>
-              <button @click="savePortalSettings" class="rounded-2xl bg-orange-500 px-5 py-3 text-[11px] font-black uppercase tracking-[0.22em] text-white hover:bg-orange-600">
-                Saqlash
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <div class="rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm">
-          <div class="mb-5">
-            <p class="text-[11px] font-black uppercase tracking-[0.3em] text-slate-400">Preview</p>
-            <h2 class="mt-2 text-xl font-black tracking-tight text-slate-900">Tanlangan ish uslubi</h2>
-          </div>
-          <div class="grid gap-4 sm:grid-cols-2">
-            <div class="rounded-2xl border p-4" :class="accentPreview.wrap">
-              <p class="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400">Accent</p>
-              <p class="mt-3 text-2xl font-black tracking-tight text-slate-900">{{ accentPreview.label }}</p>
-              <p class="mt-2 text-xs leading-5 text-slate-600">{{ accentPreview.description }}</p>
-            </div>
-            <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-              <p class="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400">Tezkor holat</p>
-              <div class="mt-3 space-y-2">
-                <p class="flex items-center justify-between text-sm font-bold text-slate-700"><span>Bildirishnoma</span><span>{{ portalSettings.autoMarkNotifications ? 'Avto o‘qiladi' : 'Qo‘lda boshqariladi' }}</span></p>
-                <p class="flex items-center justify-between text-sm font-bold text-slate-700"><span>Dashboard</span><span>{{ portalSettings.highlightAssignments ? 'Topshiriq fokusida' : 'Standart' }}</span></p>
-                <p class="flex items-center justify-between text-sm font-bold text-slate-700"><span>Kartalar</span><span>{{ portalSettings.compactCards ? 'Ixcham' : 'Keng' }}</span></p>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </section>
@@ -205,27 +159,12 @@ const portalSettings = computed({
   set: (value) => portalSettingsStore.update(value, userStore.user?.id)
 })
 const accents = [{ name: 'sun', label: 'Sun' }, { name: 'ocean', label: 'Ocean' }, { name: 'forest', label: 'Forest' }]
-const settingItems = [
-  { key: 'autoMarkNotifications', title: 'Bildirishnomani avtomatik o‘qildi qilish', description: 'Notification oynasi ochilganda qizil badge darhol pasayadi.' },
-  { key: 'highlightAssignments', title: 'Dashboardda topshiriqlarni ajratib ko‘rsatish', description: 'Yangi topshiriqlar blokini yanada ko‘zga tashlanadigan rejimda ushlab turadi.' },
-  { key: 'compactCards', title: 'Kartalarni ixcham ko‘rinishda saqlash', description: 'Ma’lumot bloklari vizual zichroq ko‘rinadi.' },
-  { key: 'showQuickInsights', title: 'Tahlil tavsiyalarini ko‘rsatish', description: 'Umumiy tahlilda tezkor xulosalar bo‘limini faol qiladi.' }
-]
 const summaryPills = computed(() => [
   { label: 'Foydalanuvchi', value: `${profile.value.firstname || ''} ${profile.value.lastname || ''}`.trim() || 'Profil' },
   { label: 'Rol', value: profile.value.role || 'User' },
   { label: 'Accent', value: portalSettings.value.accent }
 ])
 const initials = computed(() => `${(profile.value.firstname || 'U')[0] || 'U'}${(profile.value.lastname || 'S')[0] || 'S'}`.toUpperCase())
-const accentPreview = computed(() => {
-  const map = {
-    sun: { label: 'Sun Burst', description: 'Issiq, faol va energiyali kayfiyat beradi.', wrap: 'border-orange-200 bg-orange-50' },
-    ocean: { label: 'Ocean Pulse', description: 'Tinch, aniq va professional hissiyot qoldiradi.', wrap: 'border-cyan-200 bg-cyan-50' },
-    forest: { label: 'Forest Focus', description: 'Barqaror va vazmin boshqaruv hissini kuchaytiradi.', wrap: 'border-emerald-200 bg-emerald-50' }
-  }
-  return map[portalSettings.value.accent] || map.sun
-})
-
 const loadProfile = async () => {
   try {
     const res = await api.get('/users/whoami')
@@ -248,11 +187,6 @@ const loadProfile = async () => {
 
 const loadPortalSettings = () => {
   portalSettingsStore.load(userStore.user?.id)
-}
-
-const savePortalSettings = () => {
-  portalSettingsStore.save(userStore.user?.id)
-  alert('Portal sozlamalari saqlandi')
 }
 
 const handleImageUpload = (event) => {

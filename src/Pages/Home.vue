@@ -40,62 +40,111 @@
     </div>
 
     <!-- Student Focus Overview -->
-    <div v-if="userStore.user?.role === 'Student'" class="grid grid-cols-1 lg:grid-cols-2 gap-5 mt-6">
-      <div @click="$router.push('/tests')" class="rounded border border-red-200 bg-white p-6 cursor-pointer hover:shadow-lg hover:shadow-red-100/70 transition-all relative overflow-hidden">
-        <div class="absolute top-0 left-0 h-full w-1.5 bg-red-500"></div>
-        <div class="flex items-center justify-between gap-5">
-          <div>
-            <p class="text-[11px] font-black text-red-500 uppercase tracking-widest">Bajarilmagan testlar</p>
-            <p class="text-5xl font-black text-slate-900 mt-2">{{ pendingTestsCount }}</p>
-            <p class="text-[12px] text-slate-500 mt-2">Jami {{ apiData.testCount }} ta testdan hali topshirilmaganlari</p>
-          </div>
-          <div class="relative w-28 h-28 rounded-full shrink-0" :style="chartStyle(pendingTestsCount, apiData.testCount, '#ef4444')">
-            <div class="absolute inset-3 rounded-full bg-white flex flex-col items-center justify-center border border-red-100">
-              <span class="text-xl font-black text-red-600">{{ pendingPercent(pendingTestsCount, apiData.testCount) }}%</span>
-              <span class="text-[9px] font-bold uppercase text-slate-400">qolgan</span>
+    <div v-if="userStore.user?.role === 'Student'" class="mt-6 space-y-5">
+      <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+        <div @click="$router.push('/tests')" class="rounded border border-blue-100 bg-white p-5 cursor-pointer hover:border-blue-300 hover:shadow-lg hover:shadow-blue-100/60 transition-all">
+          <div class="flex items-center justify-between">
+            <div class="h-10 w-10 rounded bg-blue-50 text-blue-600 flex items-center justify-center">
+              <span class="material-icons">assignment</span>
             </div>
+            <span class="text-[10px] font-black uppercase tracking-widest text-blue-500">Testlar</span>
           </div>
+          <p class="mt-4 text-4xl font-black text-slate-900">{{ apiData.testCount }}</p>
+          <p class="mt-1 text-[12px] font-bold text-slate-500">Jami biriktirilgan testlar</p>
+        </div>
+
+        <div @click="$router.push('/tests')" class="rounded border border-emerald-100 bg-white p-5 cursor-pointer hover:border-emerald-300 hover:shadow-lg hover:shadow-emerald-100/60 transition-all">
+          <div class="flex items-center justify-between">
+            <div class="h-10 w-10 rounded bg-emerald-50 text-emerald-600 flex items-center justify-center">
+              <span class="material-icons">task_alt</span>
+            </div>
+            <span class="text-[10px] font-black uppercase tracking-widest text-emerald-600">Bajarilgan</span>
+          </div>
+          <p class="mt-4 text-4xl font-black text-slate-900">{{ completedTestsCount }}</p>
+          <p class="mt-1 text-[12px] font-bold text-slate-500">Topshirilgan testlar</p>
+        </div>
+
+        <div @click="$router.push('/tasks')" class="rounded border border-teal-100 bg-white p-5 cursor-pointer hover:border-teal-300 hover:shadow-lg hover:shadow-teal-100/60 transition-all">
+          <div class="flex items-center justify-between">
+            <div class="h-10 w-10 rounded bg-teal-50 text-teal-600 flex items-center justify-center">
+              <span class="material-icons">inventory_2</span>
+            </div>
+            <span class="text-[10px] font-black uppercase tracking-widest text-teal-600">Topshiriqlar</span>
+          </div>
+          <p class="mt-4 text-4xl font-black text-slate-900">{{ apiData.assignmentCount }}</p>
+          <p class="mt-1 text-[12px] font-bold text-slate-500">Jami topshiriqlar</p>
+        </div>
+
+        <div @click="$router.push('/tasks')" class="rounded border border-cyan-100 bg-white p-5 cursor-pointer hover:border-cyan-300 hover:shadow-lg hover:shadow-cyan-100/60 transition-all">
+          <div class="flex items-center justify-between">
+            <div class="h-10 w-10 rounded bg-cyan-50 text-cyan-600 flex items-center justify-center">
+              <span class="material-icons">done_all</span>
+            </div>
+            <span class="text-[10px] font-black uppercase tracking-widest text-cyan-600">Yuborilgan</span>
+          </div>
+          <p class="mt-4 text-4xl font-black text-slate-900">{{ completedAssignmentsCount }}</p>
+          <p class="mt-1 text-[12px] font-bold text-slate-500">Bajarilgan topshiriqlar</p>
         </div>
       </div>
 
-      <div @click="$router.push('/tasks')" class="rounded border border-red-200 bg-white p-6 cursor-pointer hover:shadow-lg hover:shadow-red-100/70 transition-all relative overflow-hidden">
-        <div class="absolute top-0 left-0 h-full w-1.5 bg-red-500"></div>
-        <div class="flex items-center justify-between gap-5">
-          <div>
-            <p class="text-[11px] font-black text-red-500 uppercase tracking-widest">Bajarilmagan topshiriqlar</p>
-            <p class="text-5xl font-black text-slate-900 mt-2">{{ pendingAssignmentsCount }}</p>
-            <p class="text-[12px] text-slate-500 mt-2">Jami {{ apiData.assignmentCount }} ta topshiriqdan hali yuborilmaganlari</p>
-          </div>
-          <div class="relative w-28 h-28 rounded-full shrink-0" :style="chartStyle(pendingAssignmentsCount, apiData.assignmentCount, '#ef4444')">
-            <div class="absolute inset-3 rounded-full bg-white flex flex-col items-center justify-center border border-red-100">
-              <span class="text-xl font-black text-red-600">{{ pendingPercent(pendingAssignmentsCount, apiData.assignmentCount) }}%</span>
-              <span class="text-[9px] font-bold uppercase text-slate-400">qolgan</span>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div class="rounded border border-slate-200 bg-white p-5">
+          <div class="flex items-center justify-between gap-4">
+            <div>
+              <p class="text-[11px] font-black uppercase tracking-widest text-slate-400">Testlar holati</p>
+              <p class="mt-1 text-sm font-bold text-slate-700">{{ completedTestsCount }} bajarilgan / {{ pendingTestsCount }} qolgan</p>
             </div>
+            <div class="relative w-20 h-20 rounded-full shrink-0" :style="chartStyle(completedTestsCount, apiData.testCount, '#10b981')">
+              <div class="absolute inset-2.5 rounded-full bg-white flex flex-col items-center justify-center border border-emerald-100">
+                <span class="text-lg font-black text-emerald-600">{{ percentOf(completedTestsCount, apiData.testCount) }}%</span>
+              </div>
+            </div>
+          </div>
+          <div class="mt-4 h-2 rounded bg-slate-100 overflow-hidden">
+            <div class="h-full rounded bg-emerald-500" :style="{ width: `${percentOf(completedTestsCount, apiData.testCount)}%` }"></div>
+          </div>
+        </div>
+
+        <div class="rounded border border-slate-200 bg-white p-5">
+          <div class="flex items-center justify-between gap-4">
+            <div>
+              <p class="text-[11px] font-black uppercase tracking-widest text-slate-400">Topshiriqlar holati</p>
+              <p class="mt-1 text-sm font-bold text-slate-700">{{ completedAssignmentsCount }} bajarilgan / {{ pendingAssignmentsCount }} qolgan</p>
+            </div>
+            <div class="relative w-20 h-20 rounded-full shrink-0" :style="chartStyle(completedAssignmentsCount, apiData.assignmentCount, '#06b6d4')">
+              <div class="absolute inset-2.5 rounded-full bg-white flex flex-col items-center justify-center border border-cyan-100">
+                <span class="text-lg font-black text-cyan-600">{{ percentOf(completedAssignmentsCount, apiData.assignmentCount) }}%</span>
+              </div>
+            </div>
+          </div>
+          <div class="mt-4 h-2 rounded bg-slate-100 overflow-hidden">
+            <div class="h-full rounded bg-cyan-500" :style="{ width: `${percentOf(completedAssignmentsCount, apiData.assignmentCount)}%` }"></div>
           </div>
         </div>
       </div>
     </div>
 
     <div v-if="userStore.user?.role === 'Student'" class="grid grid-cols-1 xl:grid-cols-2 gap-5 mt-6">
-      <div class="rounded border border-red-200 bg-red-50/60 p-5">
+      <div class="rounded border border-slate-200 bg-white p-5">
         <div class="flex items-center justify-between mb-4">
-          <h3 class="text-sm font-black text-red-700 uppercase tracking-wider flex items-center gap-2">
-            <span class="material-icons text-lg">assignment_late</span>
-            Bajarilmagan testlar
+          <h3 class="text-sm font-black text-slate-800 uppercase tracking-wider flex items-center gap-2">
+            <span class="h-8 w-8 rounded bg-blue-50 text-blue-600 flex items-center justify-center material-icons text-lg">assignment_late</span>
+            Testlar
           </h3>
-          <button @click="$router.push('/tests')" class="text-[11px] font-black text-red-600 hover:underline">Hammasi</button>
+          <button @click="$router.push('/tests')" class="text-[11px] font-black text-blue-600 hover:underline">Hammasi</button>
         </div>
-        <div v-if="pendingTestsList.length === 0" class="rounded border border-dashed border-red-200 bg-white/70 p-6 text-center text-[12px] font-bold text-slate-400">
-          Bajarilmagan test yo'q
+        <p class="mb-3 text-[11px] font-black uppercase tracking-widest text-slate-400">Bajarilmagan testlar</p>
+        <div v-if="pendingTestsList.length === 0" class="rounded border border-dashed border-slate-200 bg-slate-50 p-5 text-center text-[12px] font-bold text-slate-400">
+          Bajarilmagan test yo‘q
         </div>
         <div v-else class="space-y-3">
-          <div v-for="test in pendingTestsList.slice(0, 4)" :key="test.id" @click="$router.push('/tests')" class="rounded border border-red-200 bg-white p-4 cursor-pointer hover:border-red-400 hover:shadow-md hover:shadow-red-100 transition-all">
+          <div v-for="test in pendingTestsList.slice(0, 3)" :key="test.id" @click="$router.push('/tests')" class="rounded border border-blue-100 bg-blue-50/40 p-4 cursor-pointer hover:border-blue-300 hover:shadow-md hover:shadow-blue-100 transition-all">
             <div class="flex items-start justify-between gap-3">
               <div class="min-w-0">
                 <h4 class="text-[14px] font-black text-slate-900 truncate">{{ test.name }}</h4>
                 <p class="text-[11px] text-slate-500 mt-1 line-clamp-2">{{ test.description || 'Izoh kiritilmagan' }}</p>
               </div>
-              <span class="shrink-0 rounded bg-red-600 px-2 py-1 text-[9px] font-black uppercase tracking-widest text-white">Qolgan</span>
+              <span class="shrink-0 rounded bg-blue-600 px-2 py-1 text-[9px] font-black uppercase tracking-widest text-white">Qolgan</span>
             </div>
             <div class="mt-3 flex flex-wrap items-center gap-3 text-[11px] font-bold text-slate-500">
               <span class="flex items-center gap-1"><span class="material-icons text-sm">timer</span>{{ test.duration }} min</span>
@@ -104,21 +153,40 @@
             </div>
           </div>
         </div>
+
+        <div class="mt-5 border-t border-slate-100 pt-4">
+          <p class="mb-3 text-[11px] font-black uppercase tracking-widest text-emerald-600">Bajarilgan testlar</p>
+          <div v-if="completedTestsList.length === 0" class="rounded border border-dashed border-slate-200 bg-slate-50 p-5 text-center text-[12px] font-bold text-slate-400">
+            Hali bajarilgan test yo‘q
+          </div>
+          <div v-else class="space-y-3">
+            <div v-for="result in completedTestsList.slice(0, 3)" :key="result.id" @click="$router.push('/tests')" class="rounded border border-emerald-100 bg-emerald-50/40 p-4 cursor-pointer hover:border-emerald-300 transition-all">
+              <div class="flex items-center justify-between gap-3">
+                <div class="min-w-0">
+                  <h4 class="truncate text-[14px] font-black text-slate-900">{{ result.TestModel?.name || `Test #${result.testId}` }}</h4>
+                  <p class="mt-1 text-[11px] font-bold text-slate-500">{{ formatDate(result.createdAt) }}</p>
+                </div>
+                <span class="shrink-0 rounded bg-emerald-600 px-2 py-1 text-[10px] font-black text-white">{{ Math.round(result.percentage || 0) }}%</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div class="rounded border border-amber-200 bg-amber-50/70 p-5">
+      <div class="rounded border border-slate-200 bg-white p-5">
         <div class="flex items-center justify-between mb-4">
-          <h3 class="text-sm font-black text-amber-700 uppercase tracking-wider flex items-center gap-2">
-            <span class="material-icons text-lg">notification_important</span>
-            Bajarilmagan topshiriqlar
+          <h3 class="text-sm font-black text-slate-800 uppercase tracking-wider flex items-center gap-2">
+            <span class="h-8 w-8 rounded bg-teal-50 text-teal-600 flex items-center justify-center material-icons text-lg">inventory_2</span>
+            Topshiriqlar
           </h3>
-          <button @click="$router.push('/tasks')" class="text-[11px] font-black text-amber-700 hover:underline">Hammasi</button>
+          <button @click="$router.push('/tasks')" class="text-[11px] font-black text-teal-600 hover:underline">Hammasi</button>
         </div>
-        <div v-if="pendingAssignmentsList.length === 0" class="rounded border border-dashed border-amber-200 bg-white/70 p-6 text-center text-[12px] font-bold text-slate-400">
-          Bajarilmagan topshiriq yo'q
+        <p class="mb-3 text-[11px] font-black uppercase tracking-widest text-slate-400">Bajarilmagan topshiriqlar</p>
+        <div v-if="pendingAssignmentsList.length === 0" class="rounded border border-dashed border-slate-200 bg-slate-50 p-5 text-center text-[12px] font-bold text-slate-400">
+          Bajarilmagan topshiriq yo‘q
         </div>
         <div v-else class="space-y-3">
-          <div v-for="assignment in pendingAssignmentsList.slice(0, 4)" :key="assignment.id" @click="$router.push('/tasks')" class="rounded border border-amber-200 bg-white p-4 cursor-pointer hover:border-amber-400 hover:shadow-md hover:shadow-amber-100 transition-all">
+          <div v-for="assignment in pendingAssignmentsList.slice(0, 3)" :key="assignment.id" @click="$router.push('/tasks')" class="rounded border border-amber-100 bg-amber-50/40 p-4 cursor-pointer hover:border-amber-300 hover:shadow-md hover:shadow-amber-100 transition-all">
             <div class="flex items-start justify-between gap-3">
               <div class="min-w-0">
                 <h4 class="text-[14px] font-black text-slate-900 truncate">{{ assignment.name }}</h4>
@@ -130,6 +198,24 @@
               <span class="flex items-center gap-1"><span class="material-icons text-sm">person</span>{{ assignment.teacher?.firstname }} {{ assignment.teacher?.lastname }}</span>
               <span class="flex items-center gap-1"><span class="material-icons text-sm">workspace_premium</span>{{ formatScore(assignment.maxScore || 100) }} ball</span>
               <span class="flex items-center gap-1"><span class="material-icons text-sm">event</span>{{ formatDate(assignment.deadline) || 'Muddat ochiq' }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-5 border-t border-slate-100 pt-4">
+          <p class="mb-3 text-[11px] font-black uppercase tracking-widest text-cyan-600">Bajarilgan topshiriqlar</p>
+          <div v-if="completedAssignmentsList.length === 0" class="rounded border border-dashed border-slate-200 bg-slate-50 p-5 text-center text-[12px] font-bold text-slate-400">
+            Hali bajarilgan topshiriq yo‘q
+          </div>
+          <div v-else class="space-y-3">
+            <div v-for="submission in completedAssignmentsList.slice(0, 3)" :key="submission.id" @click="$router.push('/tasks')" class="rounded border border-cyan-100 bg-cyan-50/40 p-4 cursor-pointer hover:border-cyan-300 transition-all">
+              <div class="flex items-center justify-between gap-3">
+                <div class="min-w-0">
+                  <h4 class="truncate text-[14px] font-black text-slate-900">{{ submission.AssignmentModel?.name || `Topshiriq #${submission.assignmentId}` }}</h4>
+                  <p class="mt-1 text-[11px] font-bold text-slate-500">{{ formatDate(submission.createdAt) }}</p>
+                </div>
+                <span class="shrink-0 rounded bg-cyan-600 px-2 py-1 text-[9px] font-black uppercase tracking-widest text-white">Yuborilgan</span>
+              </div>
             </div>
           </div>
         </div>
@@ -348,6 +434,12 @@ const pendingAssignmentsList = computed(() => {
     if (apiData.value.pendingAssignments?.length) return apiData.value.pendingAssignments;
     return (apiData.value.recentAssignments || []).filter(item => !submittedAssignmentIds.value.has(Number(item.id)));
 });
+const completedTestsList = computed(() => {
+    return [...myResults.value].sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+});
+const completedAssignmentsList = computed(() => {
+    return [...mySubmissions.value].sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+});
 const pendingRecentTests = computed(() => {
     if (userStore.user?.role !== 'Student') return apiData.value.recentTests || [];
     return pendingTestsList.value;
@@ -380,6 +472,7 @@ const pendingPercent = (pending, total) => {
     if (!safeTotal) return 0;
     return Math.round((Number(pending || 0) / safeTotal) * 100);
 };
+const percentOf = (value, total) => pendingPercent(value, total);
 
 const chartStyle = (pending, total, color) => {
     const percent = pendingPercent(pending, total);

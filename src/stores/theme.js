@@ -6,6 +6,11 @@ const applyTheme = (theme) => {
   const root = document.documentElement
   root.classList.toggle('theme-dark', theme === 'dark')
   root.classList.toggle('theme-light', theme !== 'dark')
+  root.style.colorScheme = theme === 'dark' ? 'dark' : 'light'
+}
+
+if (typeof window !== 'undefined') {
+  applyTheme(localStorage.getItem(THEME_KEY) || 'light')
 }
 
 export const useThemeStore = defineStore('theme', {

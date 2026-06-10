@@ -227,16 +227,21 @@
     box-shadow: var(--app-shadow) !important;
   }
 
-  html.theme-dark .bg-white {
-    background-color: #0f172a !important;
+  html.theme-dark .bg-white,
+  html.theme-dark .bg-\[\#F8FAFC\],
+  html.theme-dark .bg-\[var\(--app-bg-soft\)\] {
+    background-color: var(--app-surface) !important;
   }
 
-  html.theme-dark .bg-slate-50 {
-    background-color: #111827 !important;
+  html.theme-dark .bg-slate-50,
+  html.theme-dark .bg-slate-50\/70,
+  html.theme-dark .bg-slate-50\/80 {
+    background-color: var(--app-surface-2) !important;
   }
 
-  html.theme-dark .bg-slate-100 {
-    background-color: #1e293b !important;
+  html.theme-dark .bg-slate-100,
+  html.theme-dark .bg-slate-200 {
+    background-color: var(--app-surface-3) !important;
   }
 
   html.theme-dark .bg-slate-900\/50,
@@ -254,9 +259,114 @@
     background-color: rgba(30, 41, 59, 0.38) !important;
   }
 
+  html.theme-dark .bg-blue-50,
+  html.theme-dark .bg-blue-50\/40,
+  html.theme-dark .bg-blue-50\/50,
+  html.theme-dark .bg-indigo-50,
+  html.theme-dark .bg-indigo-50\/40 {
+    background-color: rgba(37, 99, 235, 0.14) !important;
+  }
+
+  html.theme-dark .bg-emerald-50,
+  html.theme-dark .bg-emerald-50\/40,
+  html.theme-dark .bg-emerald-50\/50,
+  html.theme-dark .bg-teal-50,
+  html.theme-dark .bg-teal-50\/40,
+  html.theme-dark .bg-teal-50\/70,
+  html.theme-dark .bg-green-50 {
+    background-color: rgba(20, 184, 166, 0.14) !important;
+  }
+
+  html.theme-dark .bg-cyan-50,
+  html.theme-dark .bg-cyan-50\/40,
+  html.theme-dark .bg-cyan-50\/50 {
+    background-color: rgba(6, 182, 212, 0.14) !important;
+  }
+
+  html.theme-dark .bg-amber-50,
+  html.theme-dark .bg-amber-50\/40,
+  html.theme-dark .bg-amber-50\/70,
+  html.theme-dark .bg-orange-50,
+  html.theme-dark .bg-orange-50\/40,
+  html.theme-dark .bg-yellow-50 {
+    background-color: rgba(245, 158, 11, 0.15) !important;
+  }
+
+  html.theme-dark .bg-red-50,
+  html.theme-dark .bg-red-50\/40,
+  html.theme-dark .bg-red-50\/60,
+  html.theme-dark .bg-rose-50,
+  html.theme-dark .bg-rose-50\/40,
+  html.theme-dark .bg-pink-50 {
+    background-color: rgba(248, 113, 113, 0.12) !important;
+  }
+
+  html.theme-dark .bg-purple-50,
+  html.theme-dark .bg-purple-50\/40,
+  html.theme-dark .bg-violet-50 {
+    background-color: rgba(168, 85, 247, 0.14) !important;
+  }
+
+  html.theme-dark .from-blue-50,
+  html.theme-dark .from-teal-50,
+  html.theme-dark .from-emerald-50,
+  html.theme-dark .from-slate-50 {
+    --tw-gradient-from: var(--app-surface-2) var(--tw-gradient-from-position) !important;
+    --tw-gradient-to: rgba(21, 31, 49, 0) var(--tw-gradient-to-position) !important;
+    --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
+  }
+
+  html.theme-dark .via-white {
+    --tw-gradient-to: rgba(15, 23, 42, 0) var(--tw-gradient-to-position) !important;
+    --tw-gradient-stops: var(--tw-gradient-from), var(--app-surface) var(--tw-gradient-via-position), var(--tw-gradient-to) !important;
+  }
+
+  html.theme-dark .to-white,
+  html.theme-dark .to-emerald-50 {
+    --tw-gradient-to: var(--app-surface) var(--tw-gradient-to-position) !important;
+  }
+
   html.theme-dark .border-slate-200,
-  html.theme-dark .border-slate-100 {
-    border-color: #334155 !important;
+  html.theme-dark .border-slate-100,
+  html.theme-dark .border-slate-50,
+  html.theme-dark .divide-slate-50 > :not([hidden]) ~ :not([hidden]),
+  html.theme-dark .divide-slate-100 > :not([hidden]) ~ :not([hidden]),
+  html.theme-dark .divide-slate-200 > :not([hidden]) ~ :not([hidden]) {
+    border-color: var(--app-border) !important;
+  }
+
+  html.theme-dark .border-blue-100,
+  html.theme-dark .border-blue-200,
+  html.theme-dark .border-indigo-100,
+  html.theme-dark .border-indigo-200 {
+    border-color: rgba(96, 165, 250, 0.34) !important;
+  }
+
+  html.theme-dark .border-emerald-100,
+  html.theme-dark .border-emerald-200,
+  html.theme-dark .border-teal-100,
+  html.theme-dark .border-teal-200,
+  html.theme-dark .border-green-100 {
+    border-color: rgba(45, 212, 191, 0.34) !important;
+  }
+
+  html.theme-dark .border-cyan-100,
+  html.theme-dark .border-cyan-200 {
+    border-color: rgba(34, 211, 238, 0.34) !important;
+  }
+
+  html.theme-dark .border-amber-100,
+  html.theme-dark .border-amber-200,
+  html.theme-dark .border-orange-100,
+  html.theme-dark .border-orange-200 {
+    border-color: rgba(245, 158, 11, 0.34) !important;
+  }
+
+  html.theme-dark .border-red-100,
+  html.theme-dark .border-red-200,
+  html.theme-dark .border-rose-100,
+  html.theme-dark .border-rose-200 {
+    border-color: rgba(248, 113, 113, 0.3) !important;
   }
 
   html.theme-dark .border-white\/70,
@@ -264,6 +374,7 @@
     border-color: rgba(71, 85, 105, 0.65) !important;
   }
 
+  html.theme-dark .text-slate-900,
   html.theme-dark .text-slate-800 {
     color: #f8fafc !important;
   }
@@ -289,6 +400,52 @@
     color: #f8fafc !important;
   }
 
+  html.theme-dark .text-blue-400,
+  html.theme-dark .text-blue-500,
+  html.theme-dark .text-blue-600,
+  html.theme-dark .text-\[\#1e88e5\] {
+    color: #60a5fa !important;
+  }
+
+  html.theme-dark .text-emerald-500,
+  html.theme-dark .text-emerald-600,
+  html.theme-dark .text-emerald-700,
+  html.theme-dark .text-teal-500,
+  html.theme-dark .text-teal-600,
+  html.theme-dark .text-teal-700,
+  html.theme-dark .text-green-600 {
+    color: #2dd4bf !important;
+  }
+
+  html.theme-dark .text-cyan-500,
+  html.theme-dark .text-cyan-600,
+  html.theme-dark .text-cyan-700 {
+    color: #22d3ee !important;
+  }
+
+  html.theme-dark .text-amber-500,
+  html.theme-dark .text-amber-600,
+  html.theme-dark .text-amber-700,
+  html.theme-dark .text-orange-500,
+  html.theme-dark .text-orange-600 {
+    color: #fbbf24 !important;
+  }
+
+  html.theme-dark .text-red-500,
+  html.theme-dark .text-red-600,
+  html.theme-dark .text-red-700,
+  html.theme-dark .text-rose-500,
+  html.theme-dark .text-rose-600 {
+    color: #fb7185 !important;
+  }
+
+  html.theme-dark .text-purple-500,
+  html.theme-dark .text-purple-600,
+  html.theme-dark .text-indigo-500,
+  html.theme-dark .text-indigo-600 {
+    color: #a78bfa !important;
+  }
+
   html.theme-dark .hover\:bg-slate-50:hover {
     background-color: #162033 !important;
   }
@@ -312,12 +469,66 @@
   html.theme-dark input,
   html.theme-dark textarea,
   html.theme-dark select {
-    color: #e2e8f0;
+    background-color: var(--app-surface-2) !important;
+    border-color: var(--app-border) !important;
+    color: #e2e8f0 !important;
+  }
+
+  html.theme-dark input:focus,
+  html.theme-dark textarea:focus,
+  html.theme-dark select:focus {
+    background-color: var(--app-surface) !important;
+    border-color: var(--app-brand) !important;
+    box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.15) !important;
   }
 
   html.theme-dark input::placeholder,
   html.theme-dark textarea::placeholder {
     color: #64748b;
+  }
+
+  html.theme-dark .multiselect,
+  html.theme-dark .multiselect__tags,
+  html.theme-dark .multiselect__single,
+  html.theme-dark .multiselect__input,
+  html.theme-dark .multiselect__content-wrapper {
+    background: var(--app-surface-2) !important;
+    border-color: var(--app-border) !important;
+    color: #e2e8f0 !important;
+  }
+
+  html.theme-dark .multiselect__option {
+    background: var(--app-surface-2) !important;
+    color: #dbe7f3 !important;
+  }
+
+  html.theme-dark .multiselect__option--highlight,
+  html.theme-dark .multiselect__option--selected.multiselect__option--highlight {
+    background: var(--app-brand) !important;
+    color: #ffffff !important;
+  }
+
+  html.theme-dark .multiselect__placeholder {
+    color: #94a3b8 !important;
+  }
+
+  html.theme-dark .shadow-blue-100,
+  html.theme-dark .shadow-blue-100\/60,
+  html.theme-dark .shadow-emerald-100,
+  html.theme-dark .shadow-emerald-100\/60,
+  html.theme-dark .shadow-teal-100,
+  html.theme-dark .shadow-teal-100\/60,
+  html.theme-dark .shadow-cyan-100,
+  html.theme-dark .shadow-cyan-100\/60,
+  html.theme-dark .shadow-amber-100,
+  html.theme-dark .shadow-red-100 {
+    --tw-shadow-color: rgba(2, 6, 23, 0.55) !important;
+  }
+
+  html.theme-dark .ring-teal-200,
+  html.theme-dark .ring-blue-200,
+  html.theme-dark .ring-emerald-200 {
+    --tw-ring-color: rgba(45, 212, 191, 0.28) !important;
   }
 }
 

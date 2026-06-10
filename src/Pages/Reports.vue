@@ -59,10 +59,6 @@
             <h2 class="text-sm font-black text-slate-800">{{ currentTitle }}</h2>
             <p class="mt-1 text-[11px] text-slate-400">{{ filteredRows.length }} ta yozuv</p>
           </div>
-              <div class="relative w-full md:w-80">
-            <span class="material-icons absolute left-3 top-1/2 -translate-y-1/2 text-base text-slate-200">search1</span>
-            <input v-model="search" class="w-full rounded border border-slate-200 bg-slate-50 py-2 pl-9 pr-3 text-sm outline-none focus:border-blue-500 focus:bg-white" placeholder=" Yangi qidirish..." />
-          </div>
           <div class="relative w-full md:w-80">
             <span class="material-icons absolute left-3 top-1/2 -translate-y-1/2 text-base text-slate-300">search</span>
             <input v-model="search" class="w-full rounded border border-slate-200 bg-slate-50 py-2 pl-9 pr-3 text-sm outline-none focus:border-blue-500 focus:bg-white" placeholder="Qidirish..." />
@@ -100,7 +96,6 @@ import api from '../api'
 
 const isLoading = ref(true)
 const activeTab = ref('tests')
-const search1 = ref('')
 const search = ref('')
 const reports = ref({
   generatedAt: null,

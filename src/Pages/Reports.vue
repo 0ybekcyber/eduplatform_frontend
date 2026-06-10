@@ -15,9 +15,9 @@
           <span class="material-icons text-base">refresh</span>
           Yangilash
         </button>
-        <button @click="exportCurrentCsv" class="inline-flex items-center gap-2 rounded bg-blue-600 px-4 py-2 text-[12px] font-bold text-white hover:bg-blue-700">
+        <button @click="exportCurrentExcel" class="inline-flex items-center gap-2 rounded bg-blue-600 px-4 py-2 text-[12px] font-bold text-white hover:bg-blue-700">
           <span class="material-icons text-base">download</span>
-          CSV yuklash
+          Excel yuklash
         </button>
       </div>
     </div>
@@ -95,6 +95,7 @@
 
 <script setup>
 import { computed, onMounted, ref, watch } from 'vue'
+import * as XLSX from 'xlsx'
 import api from '../api'
 
 const isLoading = ref(true)
@@ -222,20 +223,28 @@ const formatCell = (row, column) => {
   return `${value}${column.suffix || ''}`
 }
 
-const exportCurrentCsv = () => {
+const exportCurrentExcel = () => {
   const header = currentColumns.value.map(column => column.label)
   const rows = filteredRows.value.map(row => currentColumns.value.map(column => formatCell(row, column)))
-  const csv = [header, ...rows]
-    .map(row => row.map(value => `"${String(value).replace(/"/g, '""')}"`).join(','))
-    .join('\n')
-  const blob = new Blob([`\uFEFF${csv}`], { type: 'text/csv;charset=utf-8;' })
-  const link = document.createElement('a')
-  link.href = URL.createObjectURL(blob)
-  link.download = `hisobot-${activeTab.value}.csv`
-  document.body.appendChild(link)
-  link.click()
-  document.body.removeChild(link)
-  URL.revokeObjectURL(link.href)
+  const title = currentTitle.value
+  const generatedAt = reports.value.generatedAt ? formatDate(reports.value.generatedAt) : formatDate(new Date())
+  const sheetData = [
+    ['Hisobot', title],
+    ['Yaratilgan vaqt', generatedAt],
+    [],
+    header,
+    ...rows
+  ]
+
+  const worksheet = XLSX.utils.aoa_to_sheet(sheetData)
+  worksheet['!cols'] = header.map((label, index) => {
+    const maxRowWidth = rows.reduce((max, row) => Math.max(max, String(row[index] || '').length), 0)
+    return { wch: Math.min(Math.max(String(label).length, maxRowWidth, 12) + 2, 42) }
+  })
+
+  const workbook = XLSX.utils.book_new()
+  XLSX.utils.book_append_sheet(workbook, worksheet, title.slice(0, 31) || 'Hisobot')
+  XLSX.writeFile(workbook, `hisobot-${activeTab.value}.xlsx`)
 }
 
 watch(activeTab, () => {
